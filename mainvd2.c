@@ -8,32 +8,28 @@
 #include "findroot.h"
 
 float best_result = 0.0;
-float guess;    // Giá trị khởi tạo cho phương pháp Newton-Raphson
 
 void findrootNewton(Token *postfix)
 {
-    best_result = newtonRaphson(postfix, guess);
+    best_result = newtonRaphson(postfix);
     printf("Newton Raphson tim duoc nghiem la: %f\n", best_result);
 }
 
-void findrootSecant(Token *postfix)
+void findrootSecant(Token *postfix, float a, float b)
 {
-    best_result = secantMethod(postfix);
+    best_result = secantMethod(postfix, a, b);
     printf("Secant tim duoc nghiem la: %f\n", best_result);
 }
-
 int main()
 {
     struct timespec start, end;
     Token *output;
     char str[MAX];
     int method_choice;
-
     printf("Nhap bieu thuc: ");
     fgets(str, MAX, stdin);
     str[strcspn(str, "\n")] = 0;
     output = infixToPostfix(str);
-
     if (output != NULL)
     {
         printTokens(output);
@@ -45,9 +41,6 @@ int main()
         printf("Chon (1 hoac 2): ");
         scanf("%d", &method_choice);
 
-        printf("Nhap guess: ");
-        scanf("%f", &guess);
-
         clock_gettime(CLOCK_MONOTONIC, &start);
 
         // Tùy chọn phương pháp tìm nghiệm
@@ -57,7 +50,10 @@ int main()
             findrootNewton(output);
             break;
         case 2:
-            findrootSecant(output);
+            float a, b;
+            printf("Nhap hai gia tri a va b: ");
+            scanf("%f %f", &a, &b);
+            findrootSecant(output, a, b);
             break;
         default:
             printf("Lua chon khong hop le.\n");
